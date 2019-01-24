@@ -1,0 +1,11 @@
+
+
+------------------------
+Connceting to device at 2019-01-10 17:08:49.013618 by andyn
+
+DEVICE NAME >> wgh-N1-Cab10-IPSLA-Probe#
+DEVICE IP ..[5]
+DEVICE VERSION>>[{'version': '12.4(15)T9', 'rommon': 'System', 'hostname': 'wgh-N1-Cab10-IPSLA-Probe', 'uptime': '2 years, 25 weeks, 8 hours, 15 minutes', 'reload_reason': 'reload at 09:13:00 BST Tue Jul 19 2016', 'running_image': 'c2800nm-advipservicesk9-mz.124-15.T9.bin', 'hardware': ['2851'], 'serial': ['FCZ133070NZ'], 'config_register': '0x2102'}]
+
+DEVICE INVENTORY[{'name': '2851 chassis', 'descr': '2851 chassis', 'pid': 'CISCO2851', 'vid': 'V05 ', 'sn': 'FCZ133070NZ'}, {'name': 'WAN Interface Card - Serial (1T) on Slot 0 SubSlot 3', 'descr': 'WAN Interface Card - Serial (1T)', 'pid': 'WIC-1T=', 'vid': '1.0', 'sn': '16818357'}]
+
