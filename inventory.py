@@ -70,12 +70,11 @@ def format_cli(inv_template, inventory_raw):
     
 
 def writefile(inventory_file, inventory_data, template):
-    print("\nNow to join values with headers")
+    print("\nNow to joining data values with headers...")
     #Column header from templte file
     header = ', '.join(template.header)
     #Each row of the table
     """Write ouput to csv formatted file"""
-
     with open(inventory_file, "a") as f:
         f.writelines(hostname + '\n')
         f.writelines(header + '\n')
