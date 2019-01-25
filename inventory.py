@@ -14,6 +14,7 @@ import textfsm
 
 #get ip(s) from user
 ipinput = sys.argv[1:]
+scriptname = sys.argv[0:]
 #print(ipinput)
 
 #Get username and password
@@ -22,18 +23,19 @@ password = getpass.getpass("Password? ")
 
 #get node name and create text file name
 nodename = input("Please enter node name, e.g WGH Node40: ")
-inventory_file = (nodename + " - inventory.txt")
-fsm_template_folder = os.environ["NET_TEXTFSM"]
-#inventory_template = open(fsm_template_folder + "cisco_ios_show_inventory.template")
-with open(fsm_template_folder + "\\cisco_ios_show_inventory.template" , 'r') as f:
-    inv_template = textfsm.TextFSM(f)
+py_output_dir = os.environ['PY_OUTPUTS'] + "\\inventory\\"
+inventory_file = (py_output_dir + nodename + " - inventory.txt")
 
-#print(fsm_template_folder)
-#print(inv_template)
+
+
+# Set template to use for parsing cli output
+fsm_template_folder = os.environ["NET_TEXTFSM"]
+inv_template = fsm_template_folder + "\\cisco_ios_show_inventory.template"
+print("The following Textfsm template will be used:\n" + inv_template)
 
 
 def runcmd(net_connect, ip):
-    #timestamp = str(datetime.now())
+    
     
     #Find hostname
     hostname = net_connect.find_prompt()
@@ -42,16 +44,45 @@ def runcmd(net_connect, ip):
     # Define cisco ios command
     inventory_cmd = ("show inventory")
     #Now to run the inventory command 
+    global inventory_raw
     inventory_raw = net_connect.send_command(inventory_cmd)
   
     print(type(inventory_raw))
+    print("inventory_raw output:\n" + inventory_raw)
+    return inventory_raw
 
 def format_cli(inv_template, inventory_raw):
-    # Parse the cli command output using textfsm template
-    re_table_inventory = textfsm.TextFSM(inv_template)
-    inventory_data = re_table_inventory.ParseText(inventory_raw)
-    print (inventory_data)
+    print("now inside format_cli")
+    print("inv_template is:\n" + inv_template)
+    print("inventory_raw is:\n" + inventory_raw)
+    #inventory_template = open(fsm_template_folder + "cisco_ios_show_inventory.template")
+    with open(inv_template, 'r') as f:
+        template = textfsm.TextFSM(f)
+
+    # Run the output through TextFSM
+    inventory_data = template.ParseText(inventory_raw)
+    print(type(inventory_data))
+    print(inventory_data)
     
+    writefile()
+    
+
+    def writefile(inventory_file,):
+        print("\nNow to join values with headers")
+        #Column header from templte file
+        header = ', '.join(template.header)
+        #Each row of the table
+        for row in inventory_data:
+            data = ', '.join(row)
+        
+        """Write ouput to csv formatted file"""
+    
+        with open(inventory_file, "a") as f:
+            f.writelines(header)
+            for row in inventory_data:
+                data = ', '.join(row)
+                f.writelines(data)
+
 
 netdevice = {}
 
@@ -61,7 +92,7 @@ for i in ipinput:
        
         inventory_raw = ''
         #we need to set the various options Netmiko is expecting. 
-        #We use the variables we got from the user earlier
+        #We use the variables we got from the user input earlier
         netdevice['ip'] = i
         netdevice['device_type'] = 'cisco_ios_ssh'
         netdevice['username'] = username   
@@ -71,8 +102,9 @@ for i in ipinput:
         #This command is when we are attempting to connect. If it fails, it will move on to the except block below
         net_connect = ConnectHandler(**netdevice)
         runcmd(net_connect, i)
+        print("inventory_raw just after runcmd() is:\n" + inventory_raw)
         #Send output to textfsm for re formating
-        format_cli(inv_template,inventory_raw)
+        format_cli(inv_template, inventory_raw)
 
     except:
         #here we are saying "if ssh failed, TRY telnet"
@@ -89,9 +121,10 @@ for i in ipinput:
         except:
             #this is the catch all except, if NOTHING works, tell the user and continue onto the next item in the for loop.
             print ("Unable to connect to " + netdevice['ip'])
+            print ("Plese check your username and password")
             exit()
         #continue
 else:
     print('All done. A file called ' + inventory_file + ' has been created.')
     #net_connect.enable()
-            
+
