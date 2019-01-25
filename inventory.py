@@ -25,6 +25,7 @@ password = getpass.getpass("Password? ")
 nodename = input("Please enter node name, e.g WGH Node40: ")
 py_output_dir = os.environ['PY_OUTPUTS'] + "\\inventory\\"
 inventory_file = (py_output_dir + nodename + " - inventory.txt")
+print("The inventroy file will stored here: " + inventory_file)
 
 
 
@@ -38,6 +39,7 @@ def runcmd(net_connect, ip):
     
     
     #Find hostname
+    global hostname
     hostname = net_connect.find_prompt()
     print ('Connecting to device: ' + hostname)
     
@@ -49,7 +51,7 @@ def runcmd(net_connect, ip):
   
     print(type(inventory_raw))
     print("inventory_raw output:\n" + inventory_raw)
-    return inventory_raw
+    return inventory_raw, hostname
 
 def format_cli(inv_template, inventory_raw):
     print("now inside format_cli")
@@ -64,24 +66,22 @@ def format_cli(inv_template, inventory_raw):
     print(type(inventory_data))
     print(inventory_data)
     
-    writefile()
+    writefile(inventory_file, inventory_data, template)
     
 
-    def writefile(inventory_file,):
-        print("\nNow to join values with headers")
-        #Column header from templte file
-        header = ', '.join(template.header)
-        #Each row of the table
+def writefile(inventory_file, inventory_data, template):
+    print("\nNow to join values with headers")
+    #Column header from templte file
+    header = ', '.join(template.header)
+    #Each row of the table
+    """Write ouput to csv formatted file"""
+
+    with open(inventory_file, "a") as f:
+        f.writelines(hostname + '\n')
+        f.writelines(header + '\n')
         for row in inventory_data:
-            data = ', '.join(row)
-        
-        """Write ouput to csv formatted file"""
-    
-        with open(inventory_file, "a") as f:
-            f.writelines(header)
-            for row in inventory_data:
-                data = ', '.join(row)
-                f.writelines(data)
+            data = ', '.join(row) + '\n'
+            f.writelines(data)
 
 
 netdevice = {}
