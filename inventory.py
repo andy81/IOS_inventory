@@ -17,6 +17,10 @@ ipinput = sys.argv[1:]
 scriptname = sys.argv[0:]
 #print(ipinput)
 
+#Display message about PATH variable requirements
+print("This script requires PATH variables called PY_OUTPUTS (for file output) and NET_TEXTFSM for TEXTFSM template files).")
+print("--------------------------------------------------------------------------------------------------------------------\n\n")
+
 #Get username and password
 username = input("Username? ")
 password = getpass.getpass("Password? ")
@@ -26,8 +30,6 @@ nodename = input("Please enter node name, e.g WGH Node40: ")
 py_output_dir = os.environ['PY_OUTPUTS'] + "\\inventory\\"
 inventory_file = (py_output_dir + nodename + " - inventory.txt")
 print("The inventroy file will stored here: " + inventory_file)
-
-
 
 # Set template to use for parsing cli output
 fsm_template_folder = os.environ["NET_TEXTFSM"]
