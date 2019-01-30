@@ -60,9 +60,10 @@ def format_cli(inv_template, inventory_raw):
     print("inv_template is:\n" + inv_template)
     print("inventory_raw is:\n" + inventory_raw)
     #inventory_template = open(fsm_template_folder + "cisco_ios_show_inventory.template")
+    
     with open(inv_template, 'r') as f:
         template = textfsm.TextFSM(f)
-
+    
     # Run the output through TextFSM
     inventory_data = template.ParseText(inventory_raw)
     print(type(inventory_data))
@@ -105,7 +106,9 @@ for i in ipinput:
         runcmd(net_connect, i)
         print("inventory_raw just after runcmd() is:\n" + inventory_raw)
         #Send output to textfsm for re formating
+        
         format_cli(inv_template, inventory_raw)
+        
 
     except:
         #here we are saying "if ssh failed, TRY telnet"
