@@ -18,7 +18,7 @@ scriptname = sys.argv[0:]
 #print(ipinput)
 
 #Display message about PATH variable requirements
-print("This script requires PATH variables called PY_OUTPUTS (for file output) and NET_TEXTFSM for TEXTFSM template files).")
+print("PLEASE NOTE: This script requires PATH variables set, called PY_OUTPUTS (for file output) and NET_TEXTFSM for TEXTFSM template files).")
 print("--------------------------------------------------------------------------------------------------------------------\n\n")
 
 #Get username and password
